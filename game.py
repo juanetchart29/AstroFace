@@ -12,10 +12,10 @@ class Game:
         self.interval = 3000
 
         
-        x_max, y_max = Settings.get_fullScreen_size()
-        self.ship = Ship(x_max, y_max)
+        self.x_max, self.y_max = Settings.get_fullScreen_size()
+        self.ship = Ship(self.x_max, self.y_max)
         pygame.init()
-        self.screen = pygame.display.set_mode((x_max,y_max))
+        self.screen = pygame.display.set_mode((self.x_max,self.y_max))
         pygame.display.set_caption("Battleship")
         self.speed = Settings.ship_speed
         self.clock = pygame.time.Clock()  # Control de FPS
@@ -27,7 +27,7 @@ class Game:
         self.player = Player("Player 1")
         self.enemy = Player("AI")
 
-        self.board = Board(10, 10,x_max,y_max)  
+        self.board = Board(10, 10,self.x_max,self.y_max)  
 
     def run(self):
         while self.running:
@@ -35,9 +35,17 @@ class Game:
             self.update()
             self.render()
             self.clock.tick(60)
+            self.asteroid_manager()
+
 
 
         pygame.quit()
+
+    def asteroid_manager(self):
+        if pygame.time.get_ticks() - self.last_time > self.interval:
+            self.last_time = pygame.time.get_ticks()
+            print("paso el lapso de tiempo ")
+            self.create_asteroid()
 
     def create_asteroid(self):
             my_asteroid = Asteroid(self.x_max,self.y_max)
@@ -67,9 +75,10 @@ class Game:
         if keys[pygame.K_DOWN]:
             self.ship.move(0, self.speed)
 
-        if (self.last_time - pygame.time.get_ticks())> self.interval :
-            self.create_asteroid()
+        
     def render(self):
         self.board.draw(self.screen)
         self.ship.draw(self.screen)
+        for asteroid in self.asteroid_list:
+            asteroid.draw(self.screen)
         pygame.display.flip()

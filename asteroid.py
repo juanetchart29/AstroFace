@@ -2,7 +2,7 @@ import random
 import pygame
 
 class Asteroid:
-    def __init__(self, screen_width, screen_height, size=50):
+    def __init__(self, screen_width , screen_height, size=50):
         """
         Crea un asteroide que aparece en una posición aleatoria arriba de la pantalla
         y se mueve constantemente hacia abajo.
@@ -10,10 +10,10 @@ class Asteroid:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.size = size
-        self.speed = random.randint(2, 5)
+        self.speed = 6 #random.randint(2, 5)
 
         # Posición inicial (aleatoria en X, arriba de la pantalla)
-        self.x = random.randint(0, screen_width - size)
+        self.x = random.randint(0, max(0, screen_width - size))
         self.y = -size  # Siempre aparece arriba
 
         # Cargar imagen y definir el rectángulo para colisiones
@@ -54,6 +54,7 @@ class Asteroid:
         """
         Dibuja el asteroide en la pantalla.
         """
+        print(self.x,self.y)
         self.update()
         screen.blit(self.image, (self.x, self.y))
 
