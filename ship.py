@@ -7,8 +7,8 @@ class Ship:
         """
         Representa un barco en el tablero con detección de movimiento facial.
         """
-        # self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        # self.cap = cv2.VideoCapture(0)
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        self.cap = cv2.VideoCapture(0)
 
         self.x_max = x_max
         self.y_max = y_max
@@ -68,7 +68,7 @@ class Ship:
         """
         Dibuja la nave en la pantalla.
         """
-        # self.update()
+        self.update()
         screen.blit(self.image, self.rect.topleft)  # Dibujar imagen
 
     def move(self, dx, dy):

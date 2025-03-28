@@ -75,7 +75,15 @@ class Game:
         if keys[pygame.K_DOWN]:
             self.ship.move(0, self.speed)
 
-        
+        for asteroid in self.asteroid_list:
+            asteroid.update()
+            if self.ship.rect.colliderect(asteroid.rect):  
+                self.handle_collision()
+
+    def handle_collision(self):
+        print("💥 ¡Colisión detectada!")  
+
+
     def render(self):
         self.board.draw(self.screen)
         self.ship.draw(self.screen)

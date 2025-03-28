@@ -13,7 +13,9 @@ class Asteroid:
         self.speed = 6 #random.randint(2, 5)
 
         # Posición inicial (aleatoria en X, arriba de la pantalla)
-        self.x = random.randint(0, max(0, screen_width - size))
+        # self.x = random.randint(0, max(0, screen_width - size))
+        self.x = self.x = random.choice([50, 150, 250, 350, 450, 550])
+
         self.y = -size  # Siempre aparece arriba
 
         # Cargar imagen y definir el rectángulo para colisiones
@@ -32,7 +34,6 @@ class Asteroid:
         """
         Mueve el asteroide hacia abajo y lo elimina si sale de la pantalla.
         """
-        print("estoy actualizando la")
         self.y += self.speed  # Mover hacia abajo
         self.rect.y = self.y  # Actualizar colisión
 
@@ -44,7 +45,7 @@ class Asteroid:
         """
         Reinicia el asteroide arriba con nueva posición X y velocidad.
         """
-        self.x = random.randint(0, self.screen_width - self.size)
+        self.x = self.x = random.choice([50, 150, 250, 350, 450, 550])
         self.y = -self.size  # Aparece arriba
         self.speed = random.randint(2, 5)
         self.rect.x = self.x
