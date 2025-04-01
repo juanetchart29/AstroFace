@@ -3,12 +3,14 @@ import cv2
 import numpy as np
 
 class Ship:
-    def __init__(self, x_max: int, y_max: int, size=120, smooth_factor=0.2):
+    def __init__(self, x_max: int, y_max: int, mode : str, size=120, smooth_factor=0.2):
         """
         Representa un barco en el tablero con detección de movimiento facial.
         """
-        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        self.cap = cv2.VideoCapture(0)
+        self.mode = mode
+        if mode == "video":
+            self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+            self.cap = cv2.VideoCapture(0)
 
         self.x_max = x_max
         self.y_max = y_max
@@ -28,7 +30,7 @@ class Ship:
         # Última posición de la cabeza detectada (para suavizado)
         self.target_x = self.rect.x
 
-    def update(self):
+    def ship_face_movement(self):
         """
         Captura la cámara y mueve la nave suavemente según la detección facial.
         """
@@ -68,8 +70,10 @@ class Ship:
         """
         Dibuja la nave en la pantalla.
         """
-        self.update()
-        screen.blit(self.image, self.rect.topleft)  # Dibujar imagen
+        if self.mode == "video":
+            self.ship_face_movement()
+
+        screen.blit(self.image, self.rect.topleft)  
 
     def move(self, dx, dy):
         """

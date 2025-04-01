@@ -5,15 +5,22 @@ from ship import Ship
 from settings import Settings
 from asteroid import Asteroid
 
+
+
 class Game:
     def __init__(self):
+        self.fps = Settings.fps
+        self.asteroid_last_time = pygame.time.get_ticks()  
+        self.asteroid_interval = 1000
+        self.level_timer = pygame.time.get_ticks()  
+        self.level_interval = 10000
+        self.inteligent_target_last_time = pygame.time.get_ticks()
+        self.level = 1.5
 
-        self.last_time = pygame.time.get_ticks()  
-        self.interval = 3000
-
+        self.inteligent_target_interval = 4000
         
         self.x_max, self.y_max = Settings.get_fullScreen_size()
-        self.ship = Ship(self.x_max, self.y_max)
+        self.ship = Ship(self.x_max, self.y_max, Settings.mode)
         pygame.init()
         self.screen = pygame.display.set_mode((self.x_max,self.y_max))
         pygame.display.set_caption("Battleship")
@@ -34,22 +41,38 @@ class Game:
             self.handle_events()
             self.update()
             self.render()
-            self.clock.tick(60)
+            self.clock.tick(self.fps)
             self.asteroid_manager()
+            self.level_manager()
 
 
 
         pygame.quit()
 
-    def asteroid_manager(self):
-        if pygame.time.get_ticks() - self.last_time > self.interval:
-            self.last_time = pygame.time.get_ticks()
-            print("paso el lapso de tiempo ")
-            self.create_asteroid()
 
-    def create_asteroid(self):
-            my_asteroid = Asteroid(self.x_max,self.y_max)
-            self.asteroid_list.append(my_asteroid)
+
+
+    def level_manager(self):
+        if pygame.time.get_ticks() - self.level_timer > self.level_interval:
+            self.level_timer = pygame.time.get_ticks()
+            self.level += 0.5
+
+    def asteroid_manager(self):
+        if pygame.time.get_ticks() - self.asteroid_last_time > self.asteroid_interval:
+            self.asteroid_last_time = pygame.time.get_ticks()
+            self.create_asteroid()
+        if pygame.time.get_ticks() - self.inteligent_target_last_time > self.inteligent_target_interval:
+            self.inteligent_target_last_time = pygame.time.get_ticks()
+            self.create_asteroid(inteligent_target_x = self.ship.rect.x)
+                   
+
+    def create_asteroid(self, inteligent_target_x = None ):
+        if inteligent_target_x is not None:
+            my_asteroid = Asteroid(self.x_max,self.y_max, self.level,inteligent_target_x = inteligent_target_x)
+        else: 
+            my_asteroid = Asteroid(self.x_max,self.y_max, self.level,None )    
+        self.asteroid_list.append(my_asteroid)
+            
 
 
     def handle_events(self):
@@ -76,9 +99,12 @@ class Game:
             self.ship.move(0, self.speed)
 
         for asteroid in self.asteroid_list:
-            asteroid.update()
-            if self.ship.rect.colliderect(asteroid.rect):  
-                self.handle_collision()
+            if asteroid.is_active:
+                asteroid.update()
+                if self.ship.rect.colliderect(asteroid.rect):  
+                    self.handle_collision()
+            else:
+                self.asteroid_list.remove(asteroid)
 
     def handle_collision(self):
         print("💥 ¡Colisión detectada!")  
