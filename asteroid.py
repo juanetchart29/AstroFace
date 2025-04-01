@@ -14,9 +14,7 @@ class Asteroid:
 
         self.inteligent_target_x = inteligent_target_x
         self.is_active = True
-        print(inteligent_target_x)
         if self.inteligent_target_x is not None:
-            print("entre en el asteroide dirigido a la nave")
 
             self.x = inteligent_target_x + 20
         else:
@@ -26,7 +24,7 @@ class Asteroid:
 
         # Cargar imagen y definir el rectángulo para colisiones
         try:
-            self.image = pygame.image.load("./assets/asteroid1.png")
+            self.image = pygame.image.load("./assets/asteroid/asteroid1.png")
             self.image = pygame.transform.scale(self.image, (size, size))
         except pygame.error:
             print("🚨 Error: No se pudo cargar la imagen. Verifica la ruta.")
