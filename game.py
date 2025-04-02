@@ -15,7 +15,7 @@ class Game:
         self.level_timer = pygame.time.get_ticks()  
         self.level_interval = 10000
         self.inteligent_target_last_time = pygame.time.get_ticks()
-        self.level = 1.5
+        self.level = 8
 
         self.inteligent_target_interval = 4000
         
@@ -55,7 +55,7 @@ class Game:
     def level_manager(self):
         if pygame.time.get_ticks() - self.level_timer > self.level_interval:
             self.level_timer = pygame.time.get_ticks()
-            self.level += 0.5
+            self.level += 1
 
     def asteroid_manager(self):
         if pygame.time.get_ticks() - self.asteroid_last_time > self.asteroid_interval:
@@ -107,11 +107,16 @@ class Game:
                 self.asteroid_list.remove(asteroid)
 
     def handle_collision(self):
-        print("💥 ¡Colisión detectada!")  
-
+        if self.ship.lives <= 1:
+            self.running = False
+            print("Game Over")
+        for asteroid in self.asteroid_list:
+            if asteroid.is_active and self.ship.rect.colliderect(asteroid.rect):
+                asteroid.reset()
+                self.ship.lives -= 1
 
     def render(self):
-        self.board.draw(self.screen)
+        self.board.draw(self.screen, self.ship)
         self.ship.draw(self.screen)
         for asteroid in self.asteroid_list:
             asteroid.draw(self.screen)

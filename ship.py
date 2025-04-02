@@ -7,6 +7,8 @@ class Ship:
         """
         Representa un barco en el tablero con detección de movimiento facial.
         """
+
+        self.lives = 3
         self.mode = mode
         if mode == "video":
             self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -61,7 +63,7 @@ class Ship:
         self.rect.x = max(0, min(self.x_max - self.size, self.rect.x))
 
         # Mostrar la cámara (para depuración)
-        cv2.imshow("Camera", frame)
+        # cv2.imshow("Camera", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             self.cap.release()
             cv2.destroyAllWindows()
@@ -74,6 +76,8 @@ class Ship:
             self.ship_face_movement()
 
         screen.blit(self.image, self.rect.topleft)  
+
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  
 
     def move(self, dx, dy):
         """
