@@ -1,6 +1,5 @@
 import pygame
 from board import Board
-from player import Player
 from ship import Ship
 from settings import Settings
 from asteroid import Asteroid
@@ -31,8 +30,7 @@ class Game:
 
 
         self.running = True
-        self.player = Player("Player 1")
-        self.enemy = Player("AI")
+
 
         self.board = Board(10, 10,self.x_max,self.y_max)  
 
