@@ -7,7 +7,7 @@ class Ship:
         """
         Representa un barco en el tablero con detección de movimiento facial.
         """
-
+        self.last_frame =  None  # Inicializar el frame
         self.lives = 3
         self.mode = mode
         if mode == "video":
@@ -68,16 +68,29 @@ class Ship:
             self.cap.release()
             cv2.destroyAllWindows()
 
+        self.last_frame = frame  
+
     def draw(self, screen):
         """
-        Dibuja la nave en la pantalla.
+        Dibuja la nave en la pantalla y el video en la esquina.
         """
         if self.mode == "video":
             self.ship_face_movement()
 
-        screen.blit(self.image, self.rect.topleft)  
+        if hasattr(self, 'last_frame') and self.last_frame is not None:
+            # Redimensionar el frame a algo más chico para que no moleste
+            small_frame = cv2.resize(self.last_frame, (160, 120))  # Tamaño chico
+            small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)  # Convertir a RGB
 
-        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  
+            # Crear superficie de pygame
+            frame_surface = pygame.surfarray.make_surface(np.rot90(small_frame))  # Rotar porque cv2 y pygame usan orden diferente
+
+            # Mostrar en la esquina superior izquierda
+            screen.blit(frame_surface, (10, 10))
+
+        screen.blit(self.image, self.rect.topleft)  
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  # Borde para debug
+
 
     def move(self, dx, dy):
         """
