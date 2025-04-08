@@ -58,6 +58,10 @@ class Ship:
 
         # Aplicar suavizado con interpolación lineal (lerp)
         self.rect.x += (self.target_x - self.rect.x) * self.smooth_factor
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Verde con grosor 2
+            break  # solo marcamos la primera cara detectada
+
 
         # Asegurar que no salga de los límites de la pantalla
         self.rect.x = max(0, min(self.x_max - self.size, self.rect.x))
@@ -79,14 +83,14 @@ class Ship:
 
         if hasattr(self, 'last_frame') and self.last_frame is not None:
             # Redimensionar el frame a algo más chico para que no moleste
-            small_frame = cv2.resize(self.last_frame, (160, 120))  # Tamaño chico
+            small_frame = cv2.resize(self.last_frame, (280, 200))  # Tamaño chico
             small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)  # Convertir a RGB
 
             # Crear superficie de pygame
             frame_surface = pygame.surfarray.make_surface(np.rot90(small_frame))  # Rotar porque cv2 y pygame usan orden diferente
 
             # Mostrar en la esquina superior izquierda
-            screen.blit(frame_surface, (10, 10))
+            screen.blit(frame_surface, (20,20))
 
         screen.blit(self.image, self.rect.topleft)  
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  # Borde para debug
